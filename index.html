@@ -810,7 +810,7 @@ async function renderCertCanvas(){
   text('وذلك تقديرًا لحضورها ومشاركتها في الندوة التوعوية بعنوان:', MID, 422, 600, 21, INK);
   text('«معاً بالوعي نحميها»', MID, 488, 700, 48, GREEN, 'center', null, SERIF);
   text('التي نظمتها وحدة تمكين المرأة ودعم تكافؤ الفرص بجامعة الأزهر بالتعاون مع المجلس القومي للمرأة،', MID, 544, 600, 20, INK, 'center', 930);
-  text('واستضافتها كلية الطب (بنات) بالقاهرة، يوم الثلاثاء الموافق 20 أكتوبر 2026م.', MID, 574, 600, 20, INK, 'center', 930);
+  text('والتي استضافتها كلية الطب (بنات) بالقاهرة، يوم الثلاثاء الموافق 20 أكتوبر 2026م.', MID, 574, 600, 20, INK, 'center', 930);
   text('مع خالص التمنيات لها بدوام التوفيق والتميز.', MID, 610, 600, 20, INK);
 
   /* التوقيعات */
@@ -818,7 +818,10 @@ async function renderCertCanvas(){
   text('المدير التنفيذي للوحدة', 772, 636, 600, 17, INK);
   text('أ.د/ مصطفى عبد الغني', 332, 684, 700, 27, GREEN, 'center', 330, SERIF);
   text('أ.د/ مها أبو شادي', 772, 684, 700, 27, GREEN, 'center', 330, SERIF);
-  return cv;
+  /* مقاس موحّد A4 أفقي (٢٩٧×٢١٠ مم): نفس النسبة في المعاينة وصورة PNG وملف PDF */
+  const out = document.createElement('canvas'); out.width = 2480; out.height = 1754;
+  const o = out.getContext('2d'); o.imageSmoothingQuality = 'high'; o.drawImage(cv, 0, 0, out.width, out.height);
+  return out;
 }
 
 function openCertModal(){
@@ -859,8 +862,8 @@ async function downloadCert(type, btn){
       const a = document.createElement('a'); a.href = url; a.download = base + '.png';
       document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
     } else {
-      const pdf = new window.jspdf.jsPDF({orientation:'landscape', unit:'px', format:[CERT_W, CERT_H]});
-      pdf.addImage(certCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, CERT_W, CERT_H);
+      const pdf = new window.jspdf.jsPDF({orientation:'landscape', unit:'mm', format:'a4'});
+      pdf.addImage(certCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 297, 210);
       pdf.save(base + '.pdf');
     }
   }catch(e){ console.error(e); alert('حدثت مشكلة أثناء تجهيز الشهادة، حاولي مرة أخرى.'); }
